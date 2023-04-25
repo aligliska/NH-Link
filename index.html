@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- To view in browser: python3 -m http.server 8080 & -->
+<!-- Then visit http://0.0.0.0:8080/ in your browser and navigate to the html file-->
+
+<head>
+  <title>NH Link Dashboard</title>
+  <style>
+    //<!-- define CSS rules -->
+    
+  </style>
+</head>
+
+<p><img id = "Logo" src="Cormac_New_logo.png" alt="Cormac_Logo" width="100" height="48" /></p>
+<br />
+
+<h1> 
+Provider and Clinical Laboratory Link - Connections between Hospital and Nursing Home Providers with Associated Labs 
+</h1>
+
+<h4>
+  April 25, 2023
+</h4>
+
+<hr />
+
+<h2> 
+Why Connect Providers with their Labs?
+</h2>
+
+<p> 
+     Within a given area, the number of labs greatly out numbers the number of providers. The relative location of labs to their affiliate provider also varies. While some labs are located within the same building location as their provider, some labs exist at their own building facility. In many cases, the connection or awareness of a provider + lab affiliation is unknown. Through our project, we have established a clear connection between a provider and their associated labs based on physical location via geocoding and address matching. Moreover, we can indicate to providers the available labs near a hospital or nursing home. 
+</p>
+
+<h2> 
+Our Goal: 
+</h2>
+
+<p>
+     Through the linkage of providers (i.e. hospitals and nursing homes) with their affiliated labs, we strive to make an efficient system for patients to find their facilities. In doing so, we also allow providers and lab entities to verify the correct linkage of associations.  
+</p>
+
+<h2> 
+How Does this Work?
+</h2>
+
+<p>
+     With the direct connection between providers and labs, we allow for an efficient relay of information to patients and other providers. We have created an interactive dashboard that allows users to search for associated facilities based on the limited information they have. Using search queries through facility names, location address, or provider information, we provide a vehicle for customers to find connected labs or further provider information. 
+</p>
+
+<hr />
+
+<h2>
+  Enter Query Information to Find Nearby Matches.
+</h2>
+
+<h3>
+  Are you querying with Provider or Lab information?
+  </h3>
+  
+  <div class = "container1"> 
+    <label><input type = "radio" name = "Step1" value = "Provider">Provider</label>
+    <label><input type = "radio" name = "Step1" value = "Lab">Lab</label>
+  </div> 
+  
+  
+  <h3>
+  If you selected "Provider", is it a hospital or nursing home? 
+  If you selected "Lab", enter "NA".
+  </h3>
+
+  <div class = "container2"> 
+    <label><input type = "radio" name = "Step2" value = "Hospital">Hospital</label>
+    <label><input type = "radio" name = "Step2" value = "Nursing Home">Nursing Home</label>
+    <label><input type = "radio" name = "Step2" value = "NA">NA</label>
+  </div> 
+  
+  <h3>
+  What state(s) would you like to search through?
+  </h3>
+
+  <div class = "container3"> 
+    <label><input type = "checkbox" name = "Step3" value = "CT">CT</label>
+    <label><input type = "checkbox" name = "Step3" value = "NY">NY</label>
+    <label><input type = "checkbox" name = "Step3" value = "RI">RI</label>
+    <label><input type = "checkbox" name = "Step3" value = "VA">VA</label>
+    <label><input type = "checkbox" name = "Step3" value = "VT">VT</label>
+  </div> 
+  
+  <h3>
+  How would you like to search by? Enter the query in the search bar.
+  </h3>
+
+  <div class = "container4"> 
+    <label><input type="radio" name="Step4" value="Facility Name">Facility Name</label>
+    <label><input type="radio" name="Step4" value="Provider Number">Provider Number</label>
+    <label><input type="radio" name="Step4" value="Full Address">Full Address</label>
+  </div> 
+  
+  <div class = "container5" style="margin-top:15px; margin-left:5px;">
+    <label><input type="text" name="Step5" placeholder="Enter here..." size="75"</label>
+  </div>
+  
+   <div class = "container6" style = "margin-top:15px">
+    <label><input type = "submit" name = "Step6_Submit"></label>
+  </div>
+  
+   <body>
+     <script src="https://d3js.org/d3.v7.min.js"></script>
+     
+     <script>
+    let store = {"step1":undefined, "step2":undefined, "step3":undefined, 
+      "step4":undefined, "step5":undefined}
+    
+    let submitButton = document.querySelector("input[name='Step6_Submit']")
+    
+    submitButton.addEventListener("click", () => {
+      // update step 1
+      let step1Value = document.querySelector("input[name='Step1']:checked")
+      if (step1Value == null){
+        window.alert("Please select 'Provider' or 'Lab'.")
+      }
+      store.step1 = step1Value.value
+      
+      // update step 2
+      let step2Value = document.querySelector("input[name='Step2']:checked")
+      if (step2Value == null){
+        window.alert("Please select type of provider or NA.")
+      }
+      store.step2 = step2Value.value
+      
+      // update step 3
+      let step3Array = document.querySelectorAll("input[name='Step3']:checked")
+      let step3Store = []
+      
+      for (var i = 0; i < step3Array.length; i++){
+        step3Store.push(step3Array[i].value)
+      }
+      if (step3Store.length == 0){
+        window.alert("Please select at least one state to query through.")
+      }
+      store.step3 = step3Store
+      
+      // update step 4
+      let step4Value = document.querySelector("input[name='Step4']:checked")
+      if (step4Value == null){
+        window.alert("Please select search method: 'Facility Name', 'Provider Number', or 'Full Address'.")
+      }
+      store.step4 = step4Value.value
+      
+      // update step 5
+      let step5Value = document.querySelector("input[name='Step5']")
+      if (step5Value.value == ""){
+        window.alert("Search box cannot be left blank.")
+      }
+      store.step5 = step5Value.value.toUpperCase().trim()
+      
+      if (store.step1 == "Lab" & store.step2 != "NA"){
+        window.alert("Error! Check 'NA' for #2.")
+      }
+      
+      // create svg container to display output 
+      var height = window.innerHeight;
+      var width = window.innerWidth
+      var margin = {top: 20, right: 30, bottom: 30, left: 40}
+      
+      d3.select("svg").remove();
+      
+      var svg = d3.select("body").append("svg")
+      .attr("id", "svg1")
+      .attr("width", width)
+      .attr("height", height)
+
+      // filter the data based on the store values 
+      
+      // Get the data
+	    var pathToCsv = "NEW_OuterJoined_NHLink.csv";		// path to csv
+	    
+	    d3.dsv(",", pathToCsv, function (d) {
+        return {
+          // format data attributes
+          PRVDR_NUM_prov: d.PRVDR_NUM_prov, 
+          PRVDR_NUM_lab: d.PRVDR_NUM_lab, 
+          FAC_NAME_prov: d.FAC_NAME_prov, 
+          FAC_NAME_lab: d.FAC_NAME_lab, 
+          ST_ADR_prov: d.ST_ADR_prov, 
+          ST_ADR_lab: d.ST_ADR_lab, 
+          CITY_NAME_prov: d.CITY_NAME_prov, 
+          CITY_NAME_lab: d.CITY_NAME_lab, 
+          STATE_CD_prov: d.STATE_CD_prov, 
+          STATE_CD_lab: d.STATE_CD_lab, 
+          ZIP_CD_prov: Number(d.ZIP_CD_prov), 
+          ZIP_CD_lab: Number(d.ZIP_CD_lab), 
+          FULL_ADR_prov: d.FULL_ADR_prov, 
+          FULL_ADR_lab: d.FULL_ADR_lab, 
+          PHNE_NUM_prov: Number(d.PHNE_NUM_prov), 
+          PHNE_NUM_lab: Number(d.PHNE_NUM_lab), 
+          PRVDR_CTGRY_CD: Number(d.PRVDR_CTGRY_CD), 
+          PRVDR_TYPE: d.PRVDR_TYPE, 
+          BING_ADR: d.BING_ADR
+        }
+      }).then(function (data) {
+        console.log(data); 
+        console.log(store);
+        
+        // filter the data 
+        let NH_data = data
+        
+        // step 1
+        if (store.step1 == "Lab"){ // if searching via lab information
+          // skip step 2
+          
+          // step 3 (filter states)
+          NH_data = NH_data.filter(row => (store.step3.includes(row.STATE_CD_lab)))
+          
+          // step 4 + 5 (filter via search entry)
+          if (store.step4 == "Facility Name"){
+            NH_data = NH_data.filter(row => (row.FAC_NAME_lab == store.step5))
+          } else if (store.step4 == "Provider Number"){
+            // tester 33D0967368
+            NH_data = NH_data.filter(row => (row.PRVDR_NUM_lab == store.step5))
+          } else { // Full Address
+            NH_data = NH_data.filter(row => (row.FULL_ADR_lab == store.step5))
+          }
+          
+          // after filtering, display lab specific search 
+          
+        } else { // if searching via Provider (hospital/nursing home) information 
+          // step 2
+          NH_data = NH_data.filter(row => (row.PRVDR_TYPE == store.step2))
+          
+          // step 3
+          NH_data = NH_data.filter(row => (store.step3.includes(row.STATE_CD_prov)))
+          
+          // step 4 + 5 (filter via search entry)
+          if (store.step4 == "Facility Name"){
+            NH_data = NH_data.filter(row => (row.FAC_NAME_prov == store.step5))
+          } else if (store.step4 == "Provider Number"){
+            NH_data = NH_data.filter(row => (row.PRVDR_NUM_prov == store.step5))
+          } else { // Full Address
+            NH_data = NH_data.filter(row => (row.FULL_ADR_prov == store.step5))
+          }
+        } // end of filtering 
+        
+        // update svg element
+        
+        var num_matches = NH_data.length
+        
+        if (store.step1 == "Provider"){
+          var search_facility = NH_data[0].FAC_NAME_prov
+          window.search_address = [NH_data[0].BING_ADR]
+          
+          // insert matched addresses
+          for (var n = 0; n < NH_data.length; n++){
+            window.search_address.push(NH_data[n].FULL_ADR_lab)
+          }
+        
+          // update map 
+          geocode()
+          
+          // List number of matches at top 
+          svg.append("g")
+            .attr("id", "matches")
+            .append("text")
+            .attr("x", width*.05)
+            .attr("y", height/15)
+            .style("font-size", "20px")
+            .text(function(){
+              return "Found " + num_matches + " nearby lab(s) for " + search_facility
+            })
+            
+            // facility name header
+            svg.append("g")
+              .attr("id", "facility")
+              .append("text")
+              .attr("x", width*.05)
+              .attr("y", height/9)
+              .attr("font-weight", 900)
+              .text(function(){
+                return "Lab Facility Name"
+              })
+              
+            svg.append("g")
+              .attr("id", "info")
+              .selectAll("text")
+              .data(NH_data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                if (d.FAC_NAME_lab.length > 40){
+                  return d.FAC_NAME_lab.substring(0,37) +"..."
+                } else{
+                  return d.FAC_NAME_lab
+                }
+              })
+              .attr("x", width*.05)
+              .attr("y", function (d,i){
+                return height/9 + 30*i + 30
+              })
+            
+            // provider number header 
+            svg.append("g")
+              .attr("id", "provider_num")
+              .append("text")
+              .attr("x", width*.32)
+              .attr("y", height/9)
+              .attr("font-weight", 900)
+              .text(function(){
+                return "Lab Provider Number"
+              })
+              
+            svg.append("g")
+              .attr("id", "info")
+              .selectAll("text")
+              .data(NH_data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                return d.PRVDR_NUM_lab
+              })
+              .attr("x", width*.32)
+              .attr("y", function (d,i){
+                return height/9 + 30*i + 30
+              })
+              
+            // phone number header 
+            svg.append("g")
+              .attr("id", "phone")
+              .append("text")
+              .attr("x", width*.44)
+              .attr("y", height/9)
+              .attr("font-weight", 900)
+              .text(function(){
+                return "Lab Phone Number"
+              })
+              
+            svg.append("g")
+              .attr("id", "info")
+              .selectAll("text")
+              .data(NH_data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                return d.PHNE_NUM_lab
+              })
+              .attr("x", width*.44)
+              .attr("y", function (d,i){
+                return height/9 + 30*i + 30
+              })
+            
+            // address header 
+            svg.append("g")
+              .attr("id", "address")
+              .append("text")
+              .attr("x", width*.55)
+              .attr("y", height/9)
+              .attr("font-weight", 900)
+              .text(function(){
+                return "Lab Address"
+              })
+              
+            svg.append("g")
+              .attr("id", "info")
+              .selectAll("text")
+              .data(NH_data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                if (d.FULL_ADR_lab.length > 56){
+                  return d.FULL_ADR_lab.substring(0, 54) + "..."
+                } else{
+                  return d.FULL_ADR_lab
+                }
+              })
+              .attr("x", width*.55)
+              .attr("y", function (d,i){
+                return height/9 + 30*i + 30
+              })
+              
+            // create grid lines 
+           svg.append("g")
+            .attr("id", "gridlines")
+          
+            for (let i = 0; i < NH_data.length; i++){
+              svg.selectAll("#gridlines")
+                .append("line")
+                .attr("x1", width*.05)
+                .attr("x2", width*0.8)
+                .attr("y1", function(){
+                  return height/9 + 30*i + 35
+                })
+                .attr("y2", function(){
+                  return height/9 + 30*i + 35
+                })
+                .style("stroke", "#d1d1e0")
+                .style("stroke-width", "1")
+            }
+              
+            
+        } else{ // by lab
+          var search_facility = NH_data[0].FAC_NAME_lab
+          if (NH_data[0].FAC_NAME_prov != "NA"){
+            window.search_address = [NH_data[0].BING_ADR]
+          } else{
+            window.search_address = [NH_data[0].FULL_ADR_lab]
+            num_matches = 0
+          }
+          
+          // update map 
+          geocode()
+              
+            // List number of matches at top 
+          svg.append("g")
+            .attr("id", "matches")
+            .append("text")
+            .attr("x", width*.05)
+            .attr("y", height/15)
+            .style("font-size", "20px")
+            .text(function(){
+              return "Found " + num_matches + " nearby provider(s) for " + search_facility
+            })
+            
+            // facility name header
+            svg.append("g")
+              .attr("id", "facility")
+              .append("text")
+              .attr("x", width*.05)
+              .attr("y", height/9)
+              .attr("font-weight", 900)
+              .text(function(){
+                return "Provider Facility Name"
+              })
+              
+            svg.append("g")
+              .attr("id", "info")
+              .selectAll("text")
+              .data(NH_data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                if (d.FAC_NAME_prov.length > 40){
+                  return d.FAC_NAME_prov.substring(0,37) + "..."
+                } else if (d.FAC_NAME_prov == "NA"){
+                  return ""
+                } else{
+                  return d.FAC_NAME_prov
+                }
+              })
+              .attr("x", width*.05)
+              .attr("y", function (d,i){
+                return height/9 + 30*i + 30
+              })
+            
+            // provider number header 
+            svg.append("g")
+              .attr("id", "provider_num")
+              .append("text")
+              .attr("x", width*.32)
+              .attr("y", height/9)
+              .attr("font-weight", 900)
+              .text(function(){
+                return "Provider Number"
+              })
+              
+            svg.append("g")
+              .attr("id", "info")
+              .selectAll("text")
+              .data(NH_data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                if (d.PRVDR_NUM_prov == "NA"){
+                  return ""
+                } else {
+                  return d.PRVDR_NUM_prov
+                }
+              })
+              .attr("x", width*.32)
+              .attr("y", function (d,i){
+                return height/9 + 30*i + 30
+              })
+              
+            // phone number header 
+            svg.append("g")
+              .attr("id", "phone")
+              .append("text")
+              .attr("x", width*.42)
+              .attr("y", height/9)
+              .attr("font-weight", 900)
+              .text(function(){
+                return "Provider Phone Number"
+              })
+              
+            svg.append("g")
+              .attr("id", "info")
+              .selectAll("text")
+              .data(NH_data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                if (d.FAC_NAME_prov == "NA"){
+                  return ""
+                } else {
+                  return d.PHNE_NUM_prov
+                }
+              })
+              .attr("x", width*.42)
+              .attr("y", function (d,i){
+                return height/9 + 30*i + 30
+              })
+            
+            // address header 
+            svg.append("g")
+              .attr("id", "address")
+              .append("text")
+              .attr("x", width*.55)
+              .attr("y", height/9)
+              .attr("font-weight", 900)
+              .text(function(){
+                return "Provider Address"
+              })
+              
+          svg.append("g")
+              .attr("id", "info")
+              .selectAll("text")
+              .data(NH_data)
+              .enter()
+              .append("text")
+              .text(function(d){
+                if (d.FULL_ADR_prov.length > 56){
+                  return d.FULL_ADR_prov.substring(0,54) + "..."
+                } else if (d.FULL_ADR_prov == "NA"){
+                  return ""
+                } else{
+                  return d.FULL_ADR_prov
+                }
+              })
+              .attr("x", width*.55)
+              .attr("y", function (d,i){
+                return height/9 + 30*i + 30
+              })
+              
+          // create grid lines 
+           svg.append("g")
+            .attr("id", "gridlines")
+          
+            for (let i = 0; i < NH_data.length; i++){
+              svg.selectAll("#gridlines")
+                .append("line")
+                .attr("x1", width*.05)
+                .attr("x2", width*0.8)
+                .attr("y1", function(){
+                  return height/9 + 30*i + 35
+                })
+                .attr("y2", function(){
+                  return height/9 + 30*i + 35
+                })
+                .style("stroke", "#d1d1e0")
+                .style("stroke-width", "1")
+            }
+            
+        } // end of provider if/else
+   
+        
+      }).catch(function (error) {
+        console.log(error);
+      });
+
+    }) // submit button click
+    
+    
+</script>
+          
+          
+   
+<head>
+
+    <meta charset="utf-8" />
+	<link rel="shortcut icon" href="/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="This sample shows how to add a search button to an autosuggest box." />
+    
+    <script>
+        var map, searchManager;
+
+    function GetMap() {
+        map = new Microsoft.Maps.Map('#myMap', {});
+
+        Microsoft.Maps.loadModule(['Microsoft.Maps.AutoSuggest', 'Microsoft.Maps.Search'], function () {
+            var manager = new Microsoft.Maps.AutosuggestManager({ map: map });
+            manager.attachAutosuggest('#searchBox', '#searchBoxContainer', suggestionSelected);
+
+            searchManager = new Microsoft.Maps.Search.SearchManager(map);
+        });
+    }
+
+    function suggestionSelected(result) {
+        //Remove previously results from the map.
+        map.entities.clear();
+
+        //Show the suggestion as a pushpin and center map over it.
+        var pin = new Microsoft.Maps.Pushpin(result.location);
+        map.entities.push(pin);
+
+        map.setView({ bounds: result.bestView });
+
+        document.getElementById('output').innerHTML = 'Selection:<br/>' + result.name;
+    }
+
+    function geocode() {
+        //Remove previously results from the map.
+        map.entities.clear();
+        
+        //Create an infobox at the center of the map but don't show it.
+        infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+            visible: false
+        });
+
+        //Assign the infobox to a map instance.
+        infobox.setMap(map);
+
+        //Get the users query and geocode it.
+        
+        var query = window.search_address
+
+        var r_store = []
+        for (var k = 0; k < query.length; k++){
+          var compile = {
+            where: query[k],
+            callback: function (r) {
+              r_store.push(r.results[0])
+              console.log(r.results[0])
+              
+              var locs = [] ;
+
+                //Determine a bounding box to best view the results.
+                var bounds;
+
+                if (r.results.length == 1) {
+                    bounds = r.results[0].bestView;
+                } else {
+                    //Use the locations from the results to calculate a bounding box.
+                    bounds = Microsoft.Maps.LocationRect.fromLocations(locs);
+                }
+
+                map.setView({ bounds: bounds, padding: 30 });
+              
+                //if (r && r.results && r.results.length > 0) {
+                    
+                //} // end of if 
+            }, // end of callback function
+            errorCallback: function (e) {
+                document.getElementById('output').innerHTML = "No results found.";
+            }
+        } // end compile; 
+        
+        //Make the geocode request.
+        searchManager.geocode(compile);
+        
+      } // end of for loop 
+      console.log(r_store)
+      
+      var pin, pins = [], locs = [];
+      
+      setTimeout(() => {  
+        console.log(r_store); 
+        //Add a pushpin for each result to the map and create a list to display.
+        for (var i = 0; i < r_store.length; i++) {
+            //Create a pushpin for each result.
+            pin = new Microsoft.Maps.Pushpin(r_store[i].location, {
+  
+                text: i + ''
+  
+            });
+            
+            //Store some metadata with the pushpin.
+            pin.metadata = {
+                title: 'Location ' + i,
+                description: r_store[i].name
+            };
+  
+            //Add a click event handler to the pushpin.
+            Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+  
+            pins.push(pin);
+            locs.push(r_store[i].location);
+        } // end of each pin loop 
+  
+        //Add the pins to the map
+        map.entities.push(pins);
+        
+      }, 2000);
+      
+      // console.log(r_store.length)
+      
+    } // end geocode function 
+    
+    function pushpinClicked(e) {
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            infobox.setOptions({
+                location: e.target.getLocation(),
+                title: e.target.metadata.title,
+                description: e.target.metadata.description,
+                visible: true
+            });
+        }
+    }
+    
+    function wait(time) {
+    return new Promise(resolve => {
+        setTimeout(resolve, time);
+    });
+}
+    </script>
+    
+</head>  
+
+<br/>
+<hr/>
+  
+    <div id='searchBoxContainer' style = "margin-top:15px" hidden = "hidden">
+        <input type='text' id='searchBox' />
+        <input type='button' value='Search' onclick='geocode()' />
+    </div> 
+    
+    <div id="myMap" style="position:relative;width:800px;height:400px;"></div>
+
+    <div id='output' style="margin-left:10px;float:left;"></div>
+
+    <script>
+       
+        (async () => {
+            let script = document.createElement("script");
+            script.setAttribute("src", `https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Ahhw2PfxS1Tp227efz5hd_w2FYf8FrBNN8UhBNj672Ltw_tnZ8L678u3m1qvyk-_`);
+            document.body.appendChild(script);
+        })();
+    </script>
+</body>
+</html>
+
+  
