@@ -8,48 +8,224 @@
   <title>NH Link Dashboard</title>
   <style>
     //<!-- define CSS rules -->
+    div.logo {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    div.header {
+      position: absolute;
+      top: 0;
+      left:0;
+      right:0;
+      width: 100%;
+      margin: 0;
+      padding: 0px;
+      z-index: -100;
+    }
+    #headerImage {
+      opacity:0.75;
+    }
+    #logoImage {
+      top: 0;
+      right:0;
+    }
+    h1{
+      color: #1d3030;
+      text-shadow: 1px 1px 2px LightSteelBlue;
+      font-family: "Droid Sans";
+    }
+    h2{
+      color: #305050;
+      text-shadow: 1px 1px 2px LightSteelBlue;
+      font-family: "Droid Sans";
+    }
+    h3{
+      color: #305050;
+      text-shadow: 1px 1px 2px LightSteelBlue;
+      font-family: "Droid Sans";
+    }
+    h4{
+      color: #305050;
+      text-shadow: 1px 1px 2px LightSteelBlue;
+      font-family: "Droid Sans";
+    }
+    .flip-card {
+    position: relative;
+    top: 25px;
+    left: 175px;
+    display: inline-block;
+    background-color: transparent;
+    width: 350px;
+    height: 250px;
+    padding-bottom: 25px;
+    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+  }
+  .flip-card-2 {
+    position: relative;
+    top: 25px;
+    left: 175px;
+    display: inline-block;
+    background-color: transparent;
+    width: 350px;
+    height: 250px;
+    padding-bottom: 25px;
+    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+  }
+  .flip-card-3 {
+    position: relative;
+    top: 25px;
+    left: 175px;
+    display: inline-block;
+    background-color: transparent;
+    width: 350px;
+    height: 250px;
+    padding-bottom: 25px;
+    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+  }
+  
+  /* This container is needed to position the front and back side */
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  }
+  
+  /* Do an horizontal flip when you move the mouse over the flip box container */
+  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+  .flip-card-2:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+  .flip-card-3:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  /* Position the front and back side */
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+  }
+  
+  /* Style the front side (fallback if image is missing) */
+  .flip-card-front {
+    text-align: center;
+    color: black;
+  }
+  
+  /* Style the back side */
+  .flip-card-back {
+    color: white;
+    transform: rotateY(180deg);
+  }
+  .container1{
+    font-size: 15px;
+    font-family: "Droid Sans";
+    color: #1d3030;
+  }
+  .container2{
+    font-size: 15px;
+    font-family: "Droid Sans";
+    color: #1d3030;
+  }
+  .container3{
+    font-size: 15px;
+    font-family: "Droid Sans";
+    color: #1d3030;
+  }
+  .container4{
+    font-size: 15px;
+    font-family: "Droid Sans";
+    color: #1d3030;
+  }
     
   </style>
+
 </head>
 
-<p><img id = "Logo" src="Cormac_New_logo.png" alt="Cormac_Logo" width="100" height="48" /></p>
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Droid+Sans" />
+
+<div class = "logo">
+  <img id="logoImage" src="Cormac_New_logo.png" width:"100" height:"48">
+</div>
+
 <br />
 
 <h1> 
-Provider and Clinical Laboratory Link - Connections between Hospital and Nursing Home Providers with Associated Labs 
+Provider and Clinical Laboratory Link 
 </h1>
 
+<h2>
+Connections between Hospital and Nursing Home Providers with Associated Labs
+</h2>
+
 <h4>
-  April 25, 2023
+  May 2, 2023
 </h4>
 
-<hr />
+<div class = "header">
+  <img id="headerImage" src="header_image.png" width="100%" height="268px">
+</div>
 
-<h2> 
-Why Connect Providers with their Labs?
-</h2>
+<hr color="LightGray"/>
 
-<p> 
-     Within a given area, the number of labs greatly out numbers the number of providers. The relative location of labs to their affiliate provider also varies. While some labs are located within the same building location as their provider, some labs exist at their own building facility. In many cases, the connection or awareness of a provider + lab affiliation is unknown. Through our project, we have established a clear connection between a provider and their associated labs based on physical location via geocoding and address matching. Moreover, we can indicate to providers the available labs near a hospital or nursing home. 
-</p>
+<div class="flip-card">
+  <div class="flip-card-inner">
+    <div class="flip-card-front" style="background-color: #e0ebeb;">
+      <br />
+      <br />
+      <br />
+      <h2 >Why Connect Providers with Labs?</h2>
+    </div>
+    <div class="flip-card-back" style="background-color: #eff5f5;">
+      <br />
+      <br />
+      <h4>Some labs are co-located with their provider, while others have a separate facility. Often, the affiliation between provider and lab is unknown. Our project establishes a clear provider-lab connection using geocoding and address matching, indicating available labs near hospitals and nursing homes.</h4>
+    </div>
+  </div>
+</div>
 
-<h2> 
-Our Goal: 
-</h2>
+<div class="flip-card-2">
+  <div class="flip-card-inner">
+    <div class="flip-card-front" style="background-color: #d0e2e2;">
+      <br />
+      <br />
+      <br />
+      <br />
+      <h2 >Our Goal: </h2>
+    </div>
+    <div class="flip-card-back" style="background-color: #dfecec;">
+      <h4>We believe that by linking providers such as hospitals and nursing homes with their affiliated labs, we can streamline the healthcare process and improve patient outcomes. Our mission is to establish a clear connection between providers and their associated labs based on physical location via geocoding and address matching. By doing so, we enable providers and lab entities to verify the correct linkage of associations.</h4>
+    </div>
+  </div>
+</div>
 
-<p>
-     Through the linkage of providers (i.e. hospitals and nursing homes) with their affiliated labs, we strive to make an efficient system for patients to find their facilities. In doing so, we also allow providers and lab entities to verify the correct linkage of associations.  
-</p>
+<div class="flip-card-3">
+  <div class="flip-card-inner">
+    <div class="flip-card-front" style="background-color: #bfd9d9;">
+      <br />
+      <br />
+      <br />
+      <br />
+      <h2 >How Does this Work?</h2>
+    </div>
+    <div class="flip-card-back" style="background-color: #cfe2e2">
+      <br />
+      <h4>Our interactive dashboard is designed to empower users with limited information to easily and efficiently search for associated healthcare facilities. With a user-friendly interface, users can easily enter search queries using a variety of parameters, including facility names, location addresses, or provider information. </h4>
+    </div>
+  </div>
+</div>
 
-<h2> 
-How Does this Work?
-</h2>
-
-<p>
-     With the direct connection between providers and labs, we allow for an efficient relay of information to patients and other providers. We have created an interactive dashboard that allows users to search for associated facilities based on the limited information they have. Using search queries through facility names, location address, or provider information, we provide a vehicle for customers to find connected labs or further provider information. 
-</p>
-
-<hr />
+<br />
+<br />
+<hr color="LightGray"/>
 
 <h2>
   Enter Query Information to Find Nearby Matches.
@@ -248,14 +424,19 @@ How Does this Work?
         var num_matches = NH_data.length
         
         if (store.step1 == "Provider"){
-          var search_facility = NH_data[0].FAC_NAME_prov
-          window.search_address = [NH_data[0].BING_ADR]
           
-          // insert matched addresses
-          for (var n = 0; n < NH_data.length; n++){
-            window.search_address.push(NH_data[n].FULL_ADR_lab)
-          }
-        
+          if (num_matches > 1){
+             var search_facility = NH_data[0].FAC_NAME_prov
+            window.search_address = [NH_data[0].BING_ADR]
+            // insert matched addresses
+            for (var n = 0; n < num_matches; n++){
+              window.search_address.push(NH_data[n].FULL_ADR_lab)
+              }
+            } else {
+              window.search_address = []
+            }
+          
+         
           // update map 
           geocode()
           
@@ -266,8 +447,13 @@ How Does this Work?
             .attr("x", width*.05)
             .attr("y", height/15)
             .style("font-size", "20px")
+            .style("font-family", "Droid Sans")
             .text(function(){
-              return "Found " + num_matches + " nearby lab(s) for " + search_facility
+              if (search_facility == undefined){
+                return "Found " + num_matches + " nearby lab(s)"
+              } else {
+                return "Found " + num_matches + " nearby lab(s) for " + search_facility
+              }
             })
             
             // facility name header
@@ -277,6 +463,7 @@ How Does this Work?
               .attr("x", width*.05)
               .attr("y", height/9)
               .attr("font-weight", 900)
+              .style("font-family", "Droid Sans")
               .text(function(){
                 return "Lab Facility Name"
               })
@@ -298,6 +485,7 @@ How Does this Work?
               .attr("y", function (d,i){
                 return height/9 + 30*i + 30
               })
+              .style("font-family", "Droid Sans")
             
             // provider number header 
             svg.append("g")
@@ -306,6 +494,7 @@ How Does this Work?
               .attr("x", width*.32)
               .attr("y", height/9)
               .attr("font-weight", 900)
+              .style("font-family", "Droid Sans")
               .text(function(){
                 return "Lab Provider Number"
               })
@@ -323,6 +512,7 @@ How Does this Work?
               .attr("y", function (d,i){
                 return height/9 + 30*i + 30
               })
+              .style("font-family", "Droid Sans")
               
             // phone number header 
             svg.append("g")
@@ -331,6 +521,7 @@ How Does this Work?
               .attr("x", width*.44)
               .attr("y", height/9)
               .attr("font-weight", 900)
+              .style("font-family", "Droid Sans")
               .text(function(){
                 return "Lab Phone Number"
               })
@@ -348,6 +539,7 @@ How Does this Work?
               .attr("y", function (d,i){
                 return height/9 + 30*i + 30
               })
+              .style("font-family", "Droid Sans")
             
             // address header 
             svg.append("g")
@@ -359,6 +551,7 @@ How Does this Work?
               .text(function(){
                 return "Lab Address"
               })
+              .style("font-family", "Droid Sans")
               
             svg.append("g")
               .attr("id", "info")
@@ -377,6 +570,7 @@ How Does this Work?
               .attr("y", function (d,i){
                 return height/9 + 30*i + 30
               })
+              .style("font-family", "Droid Sans")
               
             // create grid lines 
            svg.append("g")
@@ -399,13 +593,24 @@ How Does this Work?
               
             
         } else{ // by lab
-          var search_facility = NH_data[0].FAC_NAME_lab
-          if (NH_data[0].FAC_NAME_prov != "NA"){
-            window.search_address = [NH_data[0].BING_ADR]
-          } else{
-            window.search_address = [NH_data[0].FULL_ADR_lab]
-            num_matches = 0
-          }
+        
+        if (num_matches > 1){
+            var search_facility = NH_data[0].FAC_NAME_lab
+            // if no matches
+            if (NH_data[0].FAC_NAME_prov != "NA"){
+              window.search_address = [NH_data[0].BING_ADR]
+            } else{
+              window.search_address = [NH_data[0].FULL_ADR_lab]
+              num_matches = 0
+            }
+            // insert matched addresses
+            for (var n = 0; n < num_matches; n++){
+              window.search_address.push(NH_data[n].FULL_ADR_prov)
+              }
+            } else {
+              window.search_address = []
+            }
+        
           
           // update map 
           geocode()
@@ -417,8 +622,13 @@ How Does this Work?
             .attr("x", width*.05)
             .attr("y", height/15)
             .style("font-size", "20px")
+            .style("font-family", "Droid Sans")
             .text(function(){
-              return "Found " + num_matches + " nearby provider(s) for " + search_facility
+              if (search_facility == undefined){
+                return "Found " + num_matches + " nearby provider(s)"
+              } else {
+                return "Found " + num_matches + " nearby provider(s) for " + search_facility
+              }
             })
             
             // facility name header
@@ -428,6 +638,7 @@ How Does this Work?
               .attr("x", width*.05)
               .attr("y", height/9)
               .attr("font-weight", 900)
+              .style("font-family", "Droid Sans")
               .text(function(){
                 return "Provider Facility Name"
               })
@@ -451,6 +662,7 @@ How Does this Work?
               .attr("y", function (d,i){
                 return height/9 + 30*i + 30
               })
+              .style("font-family", "Droid Sans")
             
             // provider number header 
             svg.append("g")
@@ -459,6 +671,7 @@ How Does this Work?
               .attr("x", width*.32)
               .attr("y", height/9)
               .attr("font-weight", 900)
+              .style("font-family", "Droid Sans")
               .text(function(){
                 return "Provider Number"
               })
@@ -480,6 +693,7 @@ How Does this Work?
               .attr("y", function (d,i){
                 return height/9 + 30*i + 30
               })
+              .style("font-family", "Droid Sans")
               
             // phone number header 
             svg.append("g")
@@ -488,6 +702,7 @@ How Does this Work?
               .attr("x", width*.42)
               .attr("y", height/9)
               .attr("font-weight", 900)
+              .style("font-family", "Droid Sans")
               .text(function(){
                 return "Provider Phone Number"
               })
@@ -509,6 +724,7 @@ How Does this Work?
               .attr("y", function (d,i){
                 return height/9 + 30*i + 30
               })
+              .style("font-family", "Droid Sans")
             
             // address header 
             svg.append("g")
@@ -517,6 +733,7 @@ How Does this Work?
               .attr("x", width*.55)
               .attr("y", height/9)
               .attr("font-weight", 900)
+              .style("font-family", "Droid Sans")
               .text(function(){
                 return "Provider Address"
               })
@@ -540,6 +757,7 @@ How Does this Work?
               .attr("y", function (d,i){
                 return height/9 + 30*i + 30
               })
+              .style("font-family", "Droid Sans")
               
           // create grid lines 
            svg.append("g")
@@ -623,6 +841,8 @@ How Does this Work?
         //Get the users query and geocode it.
         
         var query = window.search_address
+        
+        console.log(query)
 
         var r_store = []
         for (var k = 0; k < query.length; k++){
@@ -670,13 +890,13 @@ How Does this Work?
             //Create a pushpin for each result.
             pin = new Microsoft.Maps.Pushpin(r_store[i].location, {
   
-                text: i + ''
+                text: '·'
   
             });
             
             //Store some metadata with the pushpin.
             pin.metadata = {
-                title: 'Location ' + i,
+                title: "Address:",
                 description: r_store[i].name
             };
   
@@ -726,9 +946,9 @@ How Does this Work?
         <input type='button' value='Search' onclick='geocode()' />
     </div> 
     
-    <div id="myMap" style="position:relative;width:800px;height:400px;"></div>
+    <div id="myMap" style="position:relative;width:800px;height:400px; left: 75px"></div>
 
-    <div id='output' style="margin-left:10px;float:left;"></div>
+    <div id='output' style="margin-left:10px;float:center;"></div>
 
     <script>
        
@@ -740,5 +960,3 @@ How Does this Work?
     </script>
 </body>
 </html>
-
-  
